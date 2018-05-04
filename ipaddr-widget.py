@@ -20,7 +20,7 @@ import subprocess
 import re
 import os
 
-ICON_TEMPLATE = '/usr/share/ipaddr-widget/template.png'
+ICON_TEMPLATE = '/home/user/MyDocs/Local/github/mfrasca/ipaddr-widget/template.png' 
 ICON_WIDGET = '/home/user/.config/widgets/ipaddr.png'
 
 TARGET_FOLDER = os.path.dirname(ICON_WIDGET)
@@ -34,13 +34,17 @@ ifconfig = subprocess.Popen('/sbin/ifconfig', stdout=subprocess.PIPE)
 stdout, stderr = ifconfig.communicate()
 
 ips = re.findall('addr:([^ ]+)', stdout)
-ips = filter(lambda ip: not ip.startswith('127.'), ips) or ['Offline']
+ips = [ip.split('.') for ip in ips if not ip.startswith('127.')] or [('Offline',)]
+#ips = [('10', '0', '0', '2')] + ips
 
 draw = ImageDraw.Draw(im)
 for idx, ip in enumerate(ips):
-    sx, sy = draw.textsize(ip)
-    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy)/2 + idx*sy),
-            ip, fill=(255, 255, 255))
+    l1, l2 = '.'.join(ip[:2]) + '.', '.' + '.'.join(ip[2:])
+    sx, sy = draw.textsize(l1)
+    sy += 2
+    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2), l1, fill=(255, 255, 255))
+    sx, _ = draw.textsize(l2)
+    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2 + sy), l2, fill=(255, 255, 255))
 del draw
 
 im.save(ICON_WIDGET, 'PNG')
