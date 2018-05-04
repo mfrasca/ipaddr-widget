@@ -15,7 +15,7 @@
 # Copyright (c) 2011 Thomas Perl <thp.io/about>; License: GPLv3+
 #
 
-import Image, ImageDraw
+import Image, ImageDraw, ImageFont
 import subprocess
 import re
 import os
@@ -38,13 +38,16 @@ ips = [ip.split('.') for ip in ips if not ip.startswith('127.')] or [('Offline',
 #ips = [('10', '0', '0', '2')] + ips
 
 draw = ImageDraw.Draw(im)
+font_path = "/usr/share/fonts/nokia/Nokia Sans/Nokia Sans Semi Bold.ttf"
+font = ImageFont.truetype(font_path, 12)
+
 for idx, ip in enumerate(ips):
     l1, l2 = '.'.join(ip[:2]) + '.', '.' + '.'.join(ip[2:])
-    sx, sy = draw.textsize(l1)
+    sx, sy = draw.textsize(l1, font=font)
     sy += 2
-    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2), l1, fill=(255, 255, 255))
-    sx, _ = draw.textsize(l2)
-    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2 + sy), l2, fill=(255, 255, 255))
+    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2), l1, fill=(255, 255, 255), font=font)
+    sx, _ = draw.textsize(l2, font=font)
+    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2 + sy), l2, fill=(255, 255, 255), font=font)
 del draw
 
 im.save(ICON_WIDGET, 'PNG')
