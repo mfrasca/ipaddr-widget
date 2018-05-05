@@ -39,15 +39,19 @@ ips = [ip.split('.') for ip in ips if not ip.startswith('127.')] or [('Offline',
 
 draw = ImageDraw.Draw(im)
 font_path = "/usr/share/fonts/nokia/Nokia Sans/Nokia Sans Semi Bold.ttf"
+font_path = "/usr/share/fonts/hack/Hack-Regular.ttf"
 font = ImageFont.truetype(font_path, 12)
 
-for idx, ip in enumerate(ips):
-    l1, l2 = '.'.join(ip[:2]) + '.', '.' + '.'.join(ip[2:])
-    sx, sy = draw.textsize(l1, font=font)
-    sy += 2
-    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2), l1, fill=(255, 255, 255), font=font)
-    sx, _ = draw.textsize(l2, font=font)
-    draw.text((width/2 - sx/2, height/2 - (len(ips)*sy) + idx*sy*2 + sy), l2, fill=(255, 255, 255), font=font)
+cols_count = len(ips)
+col_width = width / cols_count
+for col_no, ip in enumerate(ips):
+    rows_count = len(ip)
+    row_height = (height-14) / rows_count
+    for line_no, part in enumerate(ip):
+        sx, sy = draw.textsize(part, font=font)
+        draw.text((col_width * col_no + col_width/2 - sx/2,
+                   7 + row_height * line_no + row_height/2 - sy/2), part, fill=(255, 255, 255), font=font)
+        print(col_no, line_no, part)
 del draw
 
 im.save(ICON_WIDGET, 'PNG')
