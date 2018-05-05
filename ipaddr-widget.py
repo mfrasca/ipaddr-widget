@@ -13,6 +13,7 @@
 # the mail application could have an overlay with the amount of new mails, ...)
 #
 # Copyright (c) 2011 Thomas Perl <thp.io/about>; License: GPLv3+
+# Copyright (c) 2018 Mario Frasca <mario@anche.no>
 #
 
 import Image, ImageDraw, ImageFont
